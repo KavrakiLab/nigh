@@ -76,7 +76,15 @@ namespace unc::robotics::nigh::impl {
             min_ = q;
             max_ = q;
         }
-        
+
+        template <typename D>
+        void grow(const Space &, D *const q)
+        {
+            const auto qq = Eigen::Map<Eigen::Matrix<D, dim, 1>>(q);
+            min_ = min_.cwiseMin(qq);
+            max_ = max_.cwiseMax(qq);
+        }
+
         template <typename D>
         void grow(const Space&, const Eigen::MatrixBase<D>& q) {
             min_ = min_.cwiseMin(q);
