@@ -80,7 +80,7 @@ namespace unc::robotics::nigh::impl {
         template <typename D>
         void grow(const Space &, D *const q)
         {
-            const auto qq = Eigen::Map<Eigen::Matrix<D, dim, 1>>(q);
+            const auto qq = Eigen::Map<Eigen::Matrix<D, kDim, 1>, Eigen::Aligned32>(q);
             min_ = min_.cwiseMin(qq);
             max_ = max_.cwiseMax(qq);
         }
