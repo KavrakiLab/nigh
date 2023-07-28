@@ -39,24 +39,28 @@
 
 #include <Eigen/Dense>
 
-namespace unc::robotics::nigh::impl {
+namespace unc::robotics::nigh::impl
+{
     template <int p, typename Box, typename Key>
-    auto boxDistance(
-        const Eigen::MatrixBase<Box>& min,
-        const Eigen::MatrixBase<Box>& max,
-        const Eigen::MatrixBase<Key>& key)
+    auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max,
+                     const Eigen::MatrixBase<Key> &key)
     {
         return (min - key).cwiseMax(key - max).cwiseMax(0).template lpNorm<p>();
     }
 
     template <int p, typename Box, typename Key>
-    auto boxDistance(
-        const Eigen::MatrixBase<Box>& min,
-        const Eigen::MatrixBase<Box>& max,
-        const Eigen::ArrayBase<Key>& key)
+    auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max,
+                     const Eigen::ArrayBase<Key> &key)
     {
         return boxDistance(min, max, key.matrix());
     }
-}
+
+    template <int p, typename Box, typename Key = float *>
+    auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max, float *key)
+    {
+        const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key);
+        return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
+    }
+}  // namespace unc::robotics::nigh::impl
 
 #endif
