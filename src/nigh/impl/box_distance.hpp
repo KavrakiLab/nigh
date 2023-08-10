@@ -61,6 +61,14 @@ namespace unc::robotics::nigh::impl
         const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key);
         return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
     }
+
+    // HACK: gross hack for our custom type
+    template <int p, typename Box, typename Key>
+    auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max, const Key &key)
+    {
+        const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key.v);
+        return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
+    }
 }  // namespace unc::robotics::nigh::impl
 
 #endif
