@@ -34,6 +34,7 @@
 //! @author Jeff Ichnowski
 
 #pragma once
+#include <type_traits>
 #ifndef NIGH_IMPL_BOX_DISTANCE_HPP
 #define NIGH_IMPL_BOX_DISTANCE_HPP
 
@@ -46,6 +47,15 @@ namespace unc::robotics::nigh::impl
                      const Eigen::MatrixBase<Key> &key)
     {
         return (min - key).cwiseMax(key - max).cwiseMax(0).template lpNorm<p>();
+    }
+
+    // HACK: gross hack for our custom type
+    template <int p, typename Box, typename Key,
+              typename = std::enable_if_t<not std::is_base_of_v<Eigen::MatrixBase<Key>, Key>, bool>>
+    auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max, const Key &key)
+    {
+        const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key.v);
+        return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
     }
 
     template <int p, typename Box, typename Key>
@@ -61,14 +71,6 @@ namespace unc::robotics::nigh::impl
         const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key);
         return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
     }
-
-    // HACK: gross hack for our custom type
-    // template <int p, typename Box, typename Key>
-    // auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max, const Key &key)
-    // {
-    //     const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key.v);
-    //     return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
-    // }
 }  // namespace unc::robotics::nigh::impl
 
 #endif
