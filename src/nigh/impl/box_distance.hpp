@@ -54,7 +54,7 @@ namespace unc::robotics::nigh::impl
               typename = std::enable_if_t<not std::is_base_of_v<Eigen::MatrixBase<Key>, Key>, bool>>
     auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max, const Key &key)
     {
-        const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key.v);
+        const auto &ek = Eigen::Map<Eigen::Matrix<float, Eigen::MatrixBase<Box>::RowsAtCompileTime, 1>>(key.v);
         return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
     }
 
@@ -68,7 +68,7 @@ namespace unc::robotics::nigh::impl
     template <int p, typename Box, typename Key = float *>
     auto boxDistance(const Eigen::MatrixBase<Box> &min, const Eigen::MatrixBase<Box> &max, float *key)
     {
-        const auto &ek = Eigen::Map<Eigen::Vector<float, Eigen::MatrixBase<Box>::RowsAtCompileTime>>(key);
+        const auto &ek = Eigen::Map<Eigen::Matrix<float, Eigen::MatrixBase<Box>::RowsAtCompileTime, 1>>(key);
         return (min - ek).cwiseMax(ek - max).cwiseMax(0).template lpNorm<p>();
     }
 }  // namespace unc::robotics::nigh::impl
