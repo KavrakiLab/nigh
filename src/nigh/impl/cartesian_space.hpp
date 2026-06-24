@@ -66,8 +66,8 @@ namespace unc::robotics::nigh::impl {
         using Type = S;
         using Metric = M;
 
-        using Distance = decltype(
-            (std::declval<typename cartesian_space_element<I, S, M>::Distance>() + ...));
+        using Distance = std::decay_t<decltype(
+            (std::declval<typename cartesian_space_element<I, S, M>::Distance>() + ...))>;
 
         CartesianSpace() {
         }
