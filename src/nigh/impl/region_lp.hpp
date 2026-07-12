@@ -81,7 +81,7 @@ namespace unc::robotics::nigh::impl
         template <typename D>
         void grow(const Space &, D *const q)
         {
-            const auto qq = Eigen::Map<Eigen::Matrix<D, kDim, 1>, Eigen::Aligned32>(q);
+            const auto qq = Eigen::Map<Eigen::Matrix<D, kDim, 1>, Eigen::Unaligned>(q);
             min_ = min_.cwiseMin(qq);
             max_ = max_.cwiseMax(qq);
         }
@@ -97,7 +97,7 @@ namespace unc::robotics::nigh::impl
                   typename = std::enable_if_t<not std::is_base_of_v<Eigen::MatrixBase<T>, T>, bool>>
         void grow(const Space &, const T &q)
         {
-            const auto qq = Eigen::Map<Eigen::Matrix<float, kDim, 1>, Eigen::Aligned32>(q.v);
+            const auto qq = Eigen::Map<Eigen::Matrix<float, kDim, 1>, Eigen::Unaligned>(q.v);
             min_ = min_.cwiseMin(qq);
             max_ = max_.cwiseMax(qq);
         }
